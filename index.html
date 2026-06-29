@@ -78,17 +78,39 @@
       linear-gradient(180deg,var(--paper),var(--bg) 60%)}
   .hero .skyline{position:absolute;left:0;right:0;bottom:0;z-index:0;width:100%;height:34vh;pointer-events:none;opacity:.5}
   .hero .skyline svg{width:100%;height:100%;display:block}
-  .hero-in{position:relative;z-index:2;padding-top:7vh}
-  .eyebrow{display:flex;align-items:center;gap:14px;margin-bottom:28px}
+  .hero-in{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,1.02fr) minmax(0,.98fr);gap:clamp(24px,5vw,72px);align-items:center;padding-top:8vh}
+  .hero-copy{min-width:0}
+  .eyebrow{display:flex;align-items:center;gap:14px;margin-bottom:26px}
   .eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--blue);box-shadow:0 0 0 4px rgba(23,99,214,.15)}
-  .hero h1{font-size:clamp(3rem,11vw,9.4rem);line-height:.92;letter-spacing:-.01em}
+  .hero h1{font-size:clamp(2.6rem,6.6vw,6.6rem);line-height:.9;letter-spacing:-.015em}
   .hero h1 .it{font-style:italic;color:var(--blue-deep)}
   .hero h1 .ln{display:block;overflow:hidden}
   .hero h1 .ln > span{display:block;transform:translateY(110%);transition:transform 1.1s var(--ease)}
   .ready h1 .ln > span{transform:translateY(0)}
-  .hero-foot{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:30px;margin-top:38px}
-  .hero-lede{max-width:42ch;color:var(--ink-2);font-size:clamp(1rem,1.4vw,1.18rem)}
-  .hero-cta{display:flex;gap:16px;align-items:center}
+  .hero-lede{max-width:44ch;color:var(--ink-2);font-size:clamp(1rem,1.3vw,1.16rem);margin:30px 0 0}
+  .hero-cta{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-top:30px}
+
+  /* hero visual — animated house "before → after" portrait */
+  .hero-visual{position:relative;opacity:0;transform:translateY(28px) scale(.97);transition:opacity 1.1s var(--ease) .28s,transform 1.1s var(--ease) .28s}
+  .ready .hero-visual{opacity:1;transform:none}
+  .house-card{position:relative;aspect-ratio:400/340;border:1px solid var(--line);border-radius:18px;overflow:hidden;
+    background:linear-gradient(180deg,#fbfdff,#e7eef4);box-shadow:0 46px 100px -44px rgba(15,25,34,.45);animation:floaty 7s var(--ease) infinite}
+  @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+  .house-card .layer{position:absolute;inset:0}
+  .house-card .layer svg{width:100%;height:100%;display:block}
+  .house-card .grime{clip-path:inset(0 0 0 0);animation:wash 4.8s var(--ease) infinite alternate}
+  @keyframes wash{from{clip-path:inset(0 0 0 0)}to{clip-path:inset(0 0 0 100%)}}
+  .house-card .washline{position:absolute;top:5%;bottom:5%;width:2px;left:0;z-index:2;border-radius:2px;
+    background:linear-gradient(180deg,transparent,#7fb4ff,#1763d6,#7fb4ff,transparent);
+    box-shadow:0 0 20px 6px rgba(79,150,255,.5);opacity:.92;animation:sweepx 4.8s var(--ease) infinite alternate}
+  @keyframes sweepx{from{left:0%}to{left:100%}}
+  .house-card .badge{position:absolute;top:16px;right:16px;z-index:3;display:flex;align-items:center;gap:9px;
+    background:rgba(255,255,255,.92);backdrop-filter:blur(6px);border:1px solid var(--line);border-radius:40px;
+    padding:8px 14px;font-weight:600;font-size:.9rem;color:var(--ink);box-shadow:0 14px 34px -14px rgba(15,25,34,.45)}
+  .house-card .badge b{color:var(--blue)}
+  .house-card .badge span{font-weight:500;font-size:.64rem;letter-spacing:.05em;color:var(--muted);text-transform:uppercase}
+  .house-card .cap{position:absolute;left:16px;bottom:14px;z-index:3;font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+  .house-card .cap b{color:var(--blue-deep);font-weight:600}
   .scrollcue{position:absolute;left:0;bottom:3.2vh;z-index:2;display:flex;align-items:center;gap:12px}
   .scrollcue .ln{width:52px;height:1px;background:var(--line);position:relative;overflow:hidden}
   .scrollcue .ln::after{content:"";position:absolute;inset:0;width:40%;background:var(--blue);animation:track 2.6s var(--ease) infinite}
@@ -184,8 +206,14 @@
 
   .fx{opacity:0;transform:translateY(22px);transition:opacity 1s var(--ease),transform 1s var(--ease)}
   .fx.in{opacity:1;transform:none}
+  @media(max-width:880px){
+    .hero-in{grid-template-columns:1fr;gap:40px}
+    .hero h1{font-size:clamp(2.8rem,12vw,5rem)}
+    .hero-visual{max-width:500px;width:100%}
+  }
   @media(prefers-reduced-motion:reduce){
     *{animation:none!important;transition:none!important}.hero h1 .ln > span{transform:none}.fx{opacity:1;transform:none}.ticker-row{animation:none}
+    .hero-visual{opacity:1;transform:none}.house-card .grime,.house-card .washline{display:none}
   }
 </style>
 </head>
@@ -214,16 +242,62 @@
     </svg>
   </div>
   <div class="wrap hero-in">
-    <div class="eyebrow"><span class="dot" aria-hidden="true"></span><span class="label">Exterior soft washing — Gainesville, Florida</span></div>
-    <h1 aria-label="Curb appeal, restored.">
-      <span class="ln"><span>Curb appeal,</span></span>
-      <span class="ln"><span class="it">restored.</span></span>
-    </h1>
-    <div class="hero-foot">
+    <div class="hero-copy">
+      <div class="eyebrow"><span class="dot" aria-hidden="true"></span><span class="label">Exterior soft washing — Gainesville, Florida</span></div>
+      <h1 aria-label="Curb appeal, restored.">
+        <span class="ln"><span>Curb appeal,</span></span>
+        <span class="ln"><span class="it">restored.</span></span>
+      </h1>
       <p class="hero-lede">Gentle, professional roof and exterior soft washing — algae, mildew and years of grime lifted away, your home brought back to the day it was built. Across all of Alachua County.</p>
       <div class="hero-cta">
         <a class="btn" href="tel:+13523163281" data-magnetic data-cursor><span>Book a free demo</span></a>
         <a class="btn ghost" href="#reveal-sec" data-magnetic data-cursor><span>See the difference</span></a>
+      </div>
+    </div>
+
+    <div class="hero-visual" aria-hidden="true">
+      <div class="house-card">
+        <div class="badge"><b>4.9 ★</b><span>Google · 79 reviews</span></div>
+        <div class="layer base">
+          <svg viewBox="0 0 400 340" xmlns="http://www.w3.org/2000/svg">
+            <line x1="20" y1="300" x2="380" y2="300" stroke="#c2cdd6" stroke-width="1.5"/>
+            <circle cx="330" cy="288" r="16" fill="#cdd9d0" stroke="#a9bcb0" stroke-width="1"/>
+            <circle cx="348" cy="291" r="11" fill="#cdd9d0" stroke="#a9bcb0" stroke-width="1"/>
+            <rect x="96" y="150" width="208" height="150" fill="#f4f8fb" stroke="#5e6b76" stroke-width="2"/>
+            <path d="M78 152 L200 64 L322 152 Z" fill="#c7d4de" stroke="#5e6b76" stroke-width="2" stroke-linejoin="round"/>
+            <g stroke="#aebcc7" stroke-width="1" fill="none">
+              <path d="M92 142 L200 64 L308 142"/><path d="M108 132 L200 76 L292 132"/><path d="M124 122 L200 88 L276 122"/>
+            </g>
+            <rect x="250" y="92" width="20" height="40" fill="#cdd8e1" stroke="#5e6b76" stroke-width="2"/>
+            <rect x="187" y="104" width="26" height="26" fill="#dcebf7" stroke="#5e6b76" stroke-width="2"/>
+            <rect x="182" y="224" width="36" height="76" fill="#dfe8ef" stroke="#5e6b76" stroke-width="2"/>
+            <circle cx="211" cy="262" r="2.4" fill="#5e6b76"/>
+            <g fill="#dcebf7" stroke="#5e6b76" stroke-width="2">
+              <rect x="118" y="200" width="44" height="46"/><rect x="238" y="200" width="44" height="46"/>
+            </g>
+            <g stroke="#aebcc7" stroke-width="1">
+              <path d="M140 200 V246 M118 223 H162"/><path d="M260 200 V246 M238 223 H282"/><path d="M200 104 V130 M187 117 H213"/>
+            </g>
+          </svg>
+        </div>
+        <div class="layer grime">
+          <svg viewBox="0 0 400 340" xmlns="http://www.w3.org/2000/svg">
+            <g fill="#5f7a55">
+              <path d="M78 152 L200 64 L322 152 Z" opacity="0.26"/>
+              <path d="M150 150 L155 92 L162 92 L160 150 Z" opacity="0.42"/>
+              <path d="M178 150 L182 80 L189 80 L187 150 Z" opacity="0.36"/>
+              <path d="M214 150 L218 96 L225 96 L223 150 Z" opacity="0.4"/>
+              <path d="M250 150 L254 108 L261 108 L259 150 Z" opacity="0.34"/>
+              <rect x="96" y="252" width="208" height="48" opacity="0.16"/>
+              <ellipse cx="120" cy="282" rx="22" ry="11" opacity="0.22"/>
+              <ellipse cx="284" cy="285" rx="22" ry="10" opacity="0.2"/>
+              <path d="M96 196 L102 196 L100 300 L96 300 Z" opacity="0.32"/>
+              <path d="M150 246 L156 246 L154 300 L150 300 Z" opacity="0.24"/>
+            </g>
+          </svg>
+        </div>
+        <div class="washline"></div>
+        <div class="cap">Before <b>&rarr;</b> After · soft wash</div>
       </div>
     </div>
   </div>
